@@ -44,8 +44,8 @@ $result_klanten = $db_connect->query($query_klanten);
                             <td><?php echo htmlspecialchars($klant['Woonplaats']); ?></td>
                             <td><a href="mailto:<?php echo htmlspecialchars($klant['Emailadres']); ?>"><?php echo htmlspecialchars($klant['Emailadres']); ?></a></td>
                             <td class="actions">
-                                <a href="#" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
-                                <a href="#" title="Wijzigen"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="klant_detail.php?id=<?php echo $klant['KlantID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
+                                <a href="klant_form.php?id=<?php echo $klant['KlantID']; ?>" title="Wijzigen"><i class="fa-solid fa-pencil"></i></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
