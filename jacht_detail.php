@@ -12,21 +12,33 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $jachtId = (int)$_GET['id'];
 
 // --- Haal de hoofdgegevens van het jacht op ---
-// Gebruik een prepared statement voor veiligheid
-$stmt = $db_connect->prepare("SELECT * FROM Schepen WHERE SchipID = ?");
-$stmt->bind_param("i", $jachtId);
-$stmt->execute();
-$result_jacht = $stmt->get_result();
+// Dit blijft een simpele query naar de Schepen tabel
+$stmt_jacht = $db_connect->prepare("SELECT * FROM Schepen WHERE SchipID = ?");
+$stmt_jacht->bind_param("i", $jachtId);
+$stmt_jacht->execute();
+$result_jacht = $stmt_jacht->get_result();
 
 if ($result_jacht->num_rows === 0) {
     echo "<h1>Jacht niet gevonden</h1><p>Er kon geen jacht worden gevonden met ID: " . htmlspecialchars($jachtId) . "</p>";
     require 'footer.php';
     exit;
 }
-
 $jacht = $result_jacht->fetch_assoc();
-$pageTitle = htmlspecialchars($jacht['NaamSchip']); // Update paginatitel met de naam van het jacht
+$pageTitle = htmlspecialchars($jacht['NaamSchip']);
 
+// --- AANGEPAST: Haal ALLE huidige eigenaren op via de nieuwe koppeltabel ---
+$stmt_eigenaren = $db_connect->prepare("
+    SELECT k.KlantID, k.Voornaam, k.Achternaam, k.Bedrijfsnaam, k.KlantType
+    FROM KlantSchipRelaties ksr
+    JOIN Klanten k ON ksr.KlantID = k.KlantID
+    WHERE ksr.SchipID = ? AND ksr.RelatieType = 'Huidige Eigenaar'
+");
+$stmt_eigenaren->bind_param("i", $jachtId);
+$stmt_eigenaren->execute();
+$result_eigenaren = $stmt_eigenaren->get_result();
+
+
+// --- De rest van de queries blijven hetzelfde ---
 // --- Haal gerelateerde bezichtigingen op ---
 $stmt_bezichtigingen = $db_connect->prepare("
     SELECT b.*, k.Voornaam, k.Achternaam 
@@ -75,8 +87,29 @@ $result_biedingen = $stmt_biedingen->get_result();
             </ul>
         </div>
         
-        <!-- Kaart met omschrijving -->
+        <!-- AANGEPAST: Kaart met Eigenaar informatie die meerdere eigenaren kan tonen -->
         <div class="detail-card">
+            <h3>Huidige Eigenaar(s)</h3>
+            <?php if ($result_eigenaren->num_rows > 0): ?>
+                <ul>
+                <?php while ($eigenaar = $result_eigenaren->fetch_assoc()): ?>
+                    <?php
+                        $eigenaarNaam = ($eigenaar['KlantType'] == 'Bedrijf') 
+                            ? $eigenaar['Bedrijfsnaam'] 
+                            : $eigenaar['Voornaam'] . ' ' . $eigenaar['Achternaam'];
+                    ?>
+                    <li>
+                        <strong><a href="klant_detail.php?id=<?php echo $eigenaar['KlantID']; ?>"><?php echo htmlspecialchars($eigenaarNaam); ?></a></strong>
+                    </li>
+                <?php endwhile; ?>
+                </ul>
+            <?php else: ?>
+                <p>De eigenaar van dit schip is niet in het systeem geregistreerd.</p>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Kaart met omschrijving (nu over de volledige breedte) -->
+        <div class="detail-card detail-card-full-width">
             <h3>Omschrijving</h3>
             <p><?php echo nl2br(htmlspecialchars($jacht['OmschrijvingAlg'])); ?></p>
         </div>

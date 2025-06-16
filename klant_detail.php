@@ -49,7 +49,10 @@ $result_jachten = $stmt_jachten->get_result();
 <section class="content-page">
     <div class="page-header">
         <h2>Detailoverzicht: <?php echo $pageTitle; ?></h2>
-        <a href="klant_form.php?id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
+        <div>
+            <a href="klant_form.php?id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
+            <a href="klant_acties.php?actie=verwijder&id=<?php echo $klantId; ?>" class="action-button-header-delete" onclick="return confirm('Weet u zeker dat u deze klant wilt verwijderen?');"><i class="fa-solid fa-trash"></i> Verwijderen</a>
+        </div>
     </div>
 
     <div class="detail-grid">

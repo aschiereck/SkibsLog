@@ -89,9 +89,10 @@ $totaal_verkocht = $db_connect->query("SELECT SUM(UiteindelijkeVerkoopprijs) as 
         <div class="widget widget-actions">
              <div class="widget-header"><i class="fa-solid fa-bolt"></i><h3>Snelle Acties</h3></div>
              <div class="widget-content">
-               <a href="jachten.php?actie=nieuw" class="action-button"><i class="fa-solid fa-ship"></i> Nieuw Motorjacht</a>
-               <a href="klanten.php?actie=nieuw" class="action-button"><i class="fa-solid fa-user-plus"></i> Nieuwe Klant</a>
-               <a href="agenda.php?actie=nieuw" class="action-button"><i class="fa-solid fa-calendar-plus"></i> Nieuwe Bezichtiging</a>
+               <!-- CORRECTIE HIER: Links verwijzen nu naar de _form.php pagina's -->
+               <a href="jacht_form.php" class="action-button"><i class="fa-solid fa-ship"></i> Nieuw Motorjacht</a>
+               <a href="klant_form.php" class="action-button"><i class="fa-solid fa-user-plus"></i> Nieuwe Klant</a>
+               <a href="agenda.php" class="action-button"><i class="fa-solid fa-calendar-plus"></i> Nieuwe Bezichtiging</a>
              </div>
         </div>
 

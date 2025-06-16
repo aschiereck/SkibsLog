@@ -315,3 +315,273 @@ ul {
         grid-template-columns: 1fr;
     }
 }
+/* ==================== Interactive Detail Page Layout ==================== */
+.interactive-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.main-card-container {
+    position: sticky;
+    top: 2rem;
+}
+
+.main-card {
+    background-color: var(--widget-background);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.main-card h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.main-card-subtitle {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 1.5rem;
+}
+
+.main-card-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.main-card-specs {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-card-specs span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.main-card-description {
+    line-height: 1.6;
+}
+
+.main-card-contact p {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.main-card-contact i {
+    color: var(--accent-color);
+}
+.main-card h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+
+/* Tabs Container */
+.tabs-container {
+    width: 100%;
+}
+
+.tab-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: -1px; /* Overlap border */
+    position: relative;
+    z-index: 10;
+}
+
+.tab-item {
+    padding: 0.8rem 1.2rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+.tab-item.active {
+    background-color: var(--widget-background);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.tab-content {
+    position: relative;
+}
+
+.relation-card {
+    background-color: var(--widget-background);
+    border: 1px solid var(--border-color);
+    border-radius: 0 8px 8px 8px;
+    padding: 1.5rem;
+    display: none; /* Hide by default */
+}
+
+.relation-card.active {
+    display: block; /* Show active card */
+}
+
+.relation-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.relation-card-header h4 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.relation-type {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    color: white;
+}
+
+.relation-card-body p {
+    margin-bottom: 0.5rem;
+}
+.relation-card-body i {
+    width: 20px;
+    text-align: center;
+    margin-right: 0.5rem;
+    color: #999;
+}
+
+.relation-card-footer {
+    margin-top: 1.5rem;
+    text-align: right;
+}
+
+.card-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+.card-button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Color Coding for Relation Cards */
+.rel-huidige-eigenaar { border-top: 4px solid #3b82f6; /* Blue */}
+.rel-huidige-eigenaar .relation-type { background-color: #3b82f6; }
+
+.rel-ex-eigenaar { border-top: 4px solid #ef4444; /* Red */}
+.rel-ex-eigenaar .relation-type { background-color: #ef4444; }
+
+.rel-geïnteresseerd { border-top: 4px solid #22c55e; /* Green */}
+.rel-geïnteresseerd .relation-type { background-color: #22c55e; }
+
+/* Responsive aanpassingen voor de nieuwe layout */
+@media (max-width: 992px) {
+    .interactive-container {
+        grid-template-columns: 1fr;
+    }
+    .main-card-container {
+        position: static;
+    }
+}
+
+/* ==================== Responsive Hamburgermenu ==================== */
+
+.hamburger-menu {
+    display: none; /* Standaard verborgen op desktop */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    z-index: 1001; /* Zorgt dat het boven andere elementen staat */
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998; /* Onder de sidebar, boven de content */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* Stijlen voor schermen kleiner dan 992px */
+@media (max-width: 992px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Sidebar niet meer in de grid */
+    }
+
+    .hamburger-menu {
+        display: block; /* Toon de knop */
+    }
+    
+    .header-search {
+        flex-grow: 1; /* Laat zoekbalk de ruimte vullen */
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    }
+
+    .sidebar.is-visible {
+        transform: translateX(0);
+    }
+}
+
+/* Kleinere aanpassing voor hele kleine schermen */
+@media (max-width: 768px) {
+     .main-header {
+        flex-direction: row; /* Zorgt dat hamburger links blijft */
+        gap: 1rem;
+        align-items: center;
+    }
+    .header-search {
+        width: auto;
+    }
+    .header-user span {
+        display: none; /* Verberg de welkomsttekst */
+    }
+}
