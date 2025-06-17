@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bodId = $_POST['BodID'] ?? null;
     $bod['SchipID'] = (int)$_POST['SchipID'];
     $bod['KlantID'] = (int)$_POST['KlantID'];
-    $bod['DatumTijdBod'] = date('Y-m-d H:i:s'); // Altijd huidige tijd bij opslaan
+    $bod['DatumTijdBod'] = date('Y-m-d H:i:s');
     $bod['BodBedrag'] = (float)str_replace([',', '.'], ['', '.'], $_POST['BodBedrag']);
     $bod['Status'] = $_POST['Status'];
     $bod['GeldigTot'] = !empty($_POST['GeldigTot']) ? $_POST['GeldigTot'] : null;
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "Databasefout: " . $stmt->error;
         }
     }
-} elseif (isset($_GET['id']) && is_numeric($_GET['id'])) { // --- GET-request (data ophalen) ---
+} elseif (isset($_GET['id']) && is_numeric($_GET['id'])) { // --- GET-request (data ophalen voor wijzigen) ---
     $formAction = 'Wijzigen';
     $bodId = (int)$_GET['id'];
     $stmt = $db_connect->prepare("SELECT * FROM BiedingenLog WHERE BodID = ?");
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="SchipID">Jacht</label>
                             <select id="SchipID" name="SchipID" required>
                                 <option value="">-- Kies een jacht --</option>
-                                <?php while($jacht = $result_jachten->fetch_assoc()): ?>
+                                <?php mysqli_data_seek($result_jachten, 0); while($jacht = $result_jachten->fetch_assoc()): ?>
                                     <option value="<?php echo $jacht['SchipID']; ?>" <?php echo ($bod['SchipID'] == $jacht['SchipID']) ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($jacht['NaamSchip'] . ' (' . $jacht['MerkWerf'] . ')'); ?>
                                     </option>
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="KlantID">Bieder</label>
                             <select id="KlantID" name="KlantID" required>
                                 <option value="">-- Kies een klant --</option>
-                                <?php while($klant = $result_klanten->fetch_assoc()): 
+                                <?php mysqli_data_seek($result_klanten, 0); while($klant = $result_klanten->fetch_assoc()): 
                                     $klantNaam = ($klant['KlantType'] == 'Bedrijf') ? $klant['Bedrijfsnaam'] : $klant['Voornaam'] . ' ' . $klant['Achternaam'];
                                 ?>
                                     <option value="<?php echo $klant['KlantID']; ?>" <?php echo ($bod['KlantID'] == $klant['KlantID']) ? 'selected' : ''; ?>>
