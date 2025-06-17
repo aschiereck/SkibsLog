@@ -61,10 +61,13 @@ $huidige_gebruiker = "Mark de Boer";
                 <button class="hamburger-menu" id="hamburger-menu-toggle" aria-label="Open menu">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="header-search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="search" placeholder="Zoek een jacht, klant of contactlog...">
-                </div>
+                
+                <!-- AANGEPAST: Zoekbalk is nu een functioneel formulier -->
+                <form action="zoek.php" method="get" class="header-search">
+                    <button type="submit" class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <input type="search" name="q" placeholder="Zoek een jacht, klant of contactlog..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+                </form>
+
                 <div class="header-user">
                     <span>Welkom, <?php echo htmlspecialchars($huidige_gebruiker); ?></span>
                     <img src="https://i.pravatar.cc/40?u=markdeboer" alt="Gebruikersfoto">
@@ -72,7 +75,6 @@ $huidige_gebruiker = "Mark de Boer";
                 </div>
             </header>
 
-<!-- JavaScript voor mobiel menu -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const hamburgerToggle = document.getElementById('hamburger-menu-toggle');
