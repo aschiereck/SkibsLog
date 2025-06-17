@@ -10,7 +10,9 @@ $result_klanten = $db_connect->query($query_klanten);
 <section class="content-page">
      <div class="page-header">
         <h2><?php echo htmlspecialchars($pageTitle); ?></h2>
-        <a href="klant_form.php" class="action-button-header"><i class="fa-solid fa-plus"></i> Nieuwe Klant Toevoegen</a>
+        <?php if (has_role('user')): ?>
+            <a href="klant_form.php" class="action-button-header"><i class="fa-solid fa-plus"></i> Nieuwe Klant Toevoegen</a>
+        <?php endif; ?>
     </div>
 
     <div class="table-container">

@@ -1,6 +1,13 @@
 <?php
 $pageTitle = 'Beheer Klant';
-require 'header.php';
+require 'header.php'; // Laadt nu ook functions.php
+
+// --- ROLBEVEILIGING ---
+if (!has_role('user')) {
+    echo "<section class='content-page'><div class='error-box'>U heeft geen rechten om deze pagina te bewerken.</div></section>";
+    require 'footer.php';
+    exit;
+}
 
 $klant = [
     'KlantID' => '', 'KlantType' => 'Persoon', 'Voornaam' => '', 'Achternaam' => '',
@@ -12,6 +19,11 @@ $errors = [];
 
 // --- POST-request verwerken ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Extra controle: sta een viewer niet toe om data op te slaan.
+    if (!has_role('user')) {
+        die('Ongeautoriseerde actie.');
+    }
+
     $klantId = $_POST['KlantID'] ?? null;
     $klant['KlantType'] = $_POST['KlantType'];
     $klant['Voornaam'] = trim($_POST['Voornaam']);
@@ -25,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $klant['Emailadres'] = trim($_POST['Emailadres']);
     $klant['Notities'] = trim($_POST['Notities']);
     
-    // --- GECORRIGEERDE VALIDATIE ---
+    // Gecorrigeerde validatie
     if ($klant['KlantType'] == 'Bedrijf') {
         if (empty($klant['Bedrijfsnaam'])) {
             $errors[] = "Bedrijfsnaam is verplicht voor het klanttype 'Bedrijf'.";
@@ -46,8 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($stmt->execute()) {
-            // --- GECORRIGEERDE REDIRECT ---
-            // Na het opslaan gaan we terug naar het overzicht, niet de detailpagina.
             header("Location: klanten_overzicht.php"); 
             exit;
         } else {
@@ -126,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="Woonplaats">Woonplaats</label>
                             <input type="text" id="Woonplaats" name="Woonplaats" value="<?php echo htmlspecialchars($klant['Woonplaats']); ?>">
                         </div>
-                        <!-- TOEGEVOEGD VELD -->
                         <div class="form-group">
                             <label for="Land">Land</label>
                             <input type="text" id="Land" name="Land" value="<?php echo htmlspecialchars($klant['Land']); ?>">
@@ -157,7 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </fieldset>
                 
                 <div class="form-group form-group-full">
-                    <button type="submit" class="action-button-header"><?php echo $formAction; ?> Klant</button>
+                    <button type="submit" class="action-button-header" <?php if (!has_role('user')) echo 'disabled'; ?>>
+                        <?php echo $formAction; ?> Klant
+                    </button>
                 </div>
             </form>
         </div>

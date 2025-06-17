@@ -2,6 +2,13 @@
 $pageTitle = 'Beheer Bod';
 require 'header.php';
 
+// --- ROLBEVEILIGING ---
+if (!has_role('user')) {
+    echo "<section class='content-page'><div class='error-box'>U heeft geen rechten om deze pagina te bewerken.</div></section>";
+    require 'footer.php';
+    exit;
+}
+
 // Initialiseer variabelen
 $bod = [
     'BodID' => '', 'SchipID' => '', 'KlantID' => '', 'DatumTijdBod' => date('Y-m-d H:i:s'),
@@ -26,6 +33,8 @@ $result_klanten = $db_connect->query("SELECT KlantID, Voornaam, Achternaam, Bedr
 
 // --- POST-request verwerken ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!has_role('user')) { die('Ongeautoriseerde actie.'); }
+
     $bodId = $_POST['BodID'] ?? null;
     $bod['SchipID'] = (int)$_POST['SchipID'];
     $bod['KlantID'] = (int)$_POST['KlantID'];
@@ -150,7 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </fieldset>
 
                 <div class="form-group form-group-full">
-                    <button type="submit" class="action-button-header"><?php echo $formAction; ?> Bod</button>
+                    <button type="submit" class="action-button-header" <?php if (!has_role('user')) echo 'disabled'; ?>>
+                        <?php echo $formAction; ?> Bod
+                    </button>
                 </div>
             </form>
         </div>

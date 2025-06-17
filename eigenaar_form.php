@@ -2,30 +2,52 @@
 $pageTitle = 'Eigenaar Koppelen';
 require 'header.php';
 
+// --- ROLBEVEILIGING ---
+// Alleen een superuser of hoger mag een eigenaar toewijzen.
+if (!has_role('superuser')) {
+    echo "<section class='content-page'><div class='error-box'>U heeft geen rechten om deze actie uit te voeren.</div></section>";
+    require 'footer.php';
+    exit;
+}
+
 // Initialiseer variabelen
 $jachtId = null;
 $klantId = null;
-
-$formAction = 'Koppelen';
+$jachtNaam = "Onbekend Jacht";
 $errors = [];
+$formAction = 'Koppelen';
 
 // --- GET-request verwerken om jacht/klant vooraf in te vullen ---
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     if (isset($_GET['jacht_id'])) {
         $jachtId = (int)$_GET['jacht_id'];
+        $stmt_jacht = $db_connect->prepare("SELECT NaamSchip FROM Schepen WHERE SchipID = ?");
+        $stmt_jacht->bind_param("i", $jachtId);
+        $stmt_jacht->execute();
+        $result_jacht_naam = $stmt_jacht->get_result();
+        if($result_jacht_naam->num_rows > 0){
+            $jachtNaam = $result_jacht_naam->fetch_assoc()['NaamSchip'];
+        }
     }
     if (isset($_GET['klant_id'])) {
         $klantId = (int)$_GET['klant_id'];
     }
+} else {
+    $jachtId = (int)$_POST['SchipID'];
 }
 
-// --- Haal alle jachten en klanten op voor de dropdowns ---
+if ($jachtId === null && !isset($_POST['SchipID'])) {
+     $errors[] = "Geen geldig jacht geselecteerd om een eigenaar aan te koppelen.";
+}
+
+// --- Haal alle klanten en jachten op voor de dropdowns ---
 $result_jachten = $db_connect->query("SELECT SchipID, NaamSchip, MerkWerf FROM Schepen WHERE Status = 'Te Koop' OR Status = 'Onder Bod' ORDER BY NaamSchip");
 $result_klanten = $db_connect->query("SELECT KlantID, Voornaam, Achternaam, Bedrijfsnaam, KlantType FROM Klanten ORDER BY Achternaam, Bedrijfsnaam");
 
 // --- POST-request verwerken ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $jachtId = (int)$_POST['SchipID'];
+    if (!has_role('superuser')) { die('Ongeautoriseerde actie.'); }
+    
     $klantId = (int)$_POST['KlantID'];
     $startDatum = $_POST['Startdatum'];
 
@@ -37,19 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $db_connect->begin_transaction();
         try {
-            // Stap 1: Zet alle 'Huidige Eigenaren' van dit schip op 'Ex-Eigenaar'
             $eindDatumVandaag = date('Y-m-d');
             $stmt_update_oud = $db_connect->prepare("UPDATE KlantSchipRelaties SET RelatieType = 'Ex-Eigenaar', Einddatum = ? WHERE SchipID = ? AND RelatieType = 'Huidige Eigenaar'");
             $stmt_update_oud->bind_param("si", $eindDatumVandaag, $jachtId);
             $stmt_update_oud->execute();
 
-            // Stap 2: Voeg de nieuwe eigenaar toe
             $relatieType = 'Huidige Eigenaar';
             $stmt_insert_nieuw = $db_connect->prepare("INSERT INTO KlantSchipRelaties (KlantID, SchipID, RelatieType, Startdatum) VALUES (?, ?, ?, ?)");
             $stmt_insert_nieuw->bind_param("iiss", $klantId, $jachtId, $relatieType, $startDatum);
             $stmt_insert_nieuw->execute();
             
-            // Stap 3: Update de status van het schip zelf naar 'Verkocht'
             $stmt_update_schip = $db_connect->prepare("UPDATE Schepen SET Status = 'Verkocht' WHERE SchipID = ?");
             $stmt_update_schip->bind_param("i", $jachtId);
             $stmt_update_schip->execute();
@@ -83,6 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-page-container">
         <div class="form-main-content">
             <form action="eigenaar_form.php" method="post">
+                <input type="hidden" name="SchipID" value="<?php echo htmlspecialchars($jachtId); ?>">
+                
                 <fieldset>
                     <legend>Nieuwe Eigenaar Toewijzen</legend>
                     <div class="form-grid">

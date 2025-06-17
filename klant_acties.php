@@ -1,9 +1,14 @@
 <?php
-require 'header.php'; // Db-connectie is nodig
+require 'header.php'; // Db-connectie en functies zijn nodig
 
 // Controleer op geldige actie en ID
 if (isset($_GET['actie']) && $_GET['actie'] == 'verwijder' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     
+    // --- ROLBEVEILIGING ---
+    if (!has_role('superuser')) {
+        die('Ongeautoriseerde actie: U heeft geen rechten om een klant te verwijderen.');
+    }
+
     $klantId = (int)$_GET['id'];
 
     // Beveiligde query met prepared statement
@@ -11,11 +16,9 @@ if (isset($_GET['actie']) && $_GET['actie'] == 'verwijder' && isset($_GET['id'])
     $stmt->bind_param("i", $klantId);
 
     if ($stmt->execute()) {
-        // Succesvol, stuur terug naar overzicht
-        header("Location: klanten.php");
+        header("Location: klanten_overzicht.php");
         exit;
     } else {
-        // Fout bij uitvoeren
         die("Er is een fout opgetreden bij het verwijderen van de klant.");
     }
 

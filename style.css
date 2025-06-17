@@ -1055,3 +1055,17 @@ tbody tr a.row-link {
     /* Voor debuggen: background-color: rgba(255, 0, 0, 0.1); */
 }
 
+/* ==================== Sidebar Logo Style ==================== */
+
+.sidebar-logo {
+    height: 80px;
+    width: 80px;
+}
+
+.form-avatar-preview {
+    max-width: 100px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+}

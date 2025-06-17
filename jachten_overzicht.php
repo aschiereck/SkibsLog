@@ -10,7 +10,9 @@ $result_jachten = $db_connect->query($query_jachten);
 <section class="content-page">
     <div class="page-header">
         <h2><?php echo htmlspecialchars($pageTitle); ?></h2>
-        <a href="jacht_form.php" class="action-button-header"><i class="fa-solid fa-plus"></i> Nieuw Jacht Toevoegen</a>
+        <?php if (has_role('user')): ?>
+            <a href="jacht_form.php" class="action-button-header"><i class="fa-solid fa-plus"></i> Nieuw Jacht Toevoegen</a>
+        <?php endif; ?>
     </div>
 
     <div class="table-container">

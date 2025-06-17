@@ -1,9 +1,15 @@
 <?php
-require 'header.php'; // We hebben de db-connectie nodig
+require 'header.php'; // We hebben de db-connectie en functies nodig
 
 // Controleer of de actie en ID correct zijn opgegeven
 if (isset($_GET['actie']) && $_GET['actie'] == 'verwijder' && isset($_GET['id']) && is_numeric($_GET['id'])) {
     
+    // --- ROLBEVEILIGING ---
+    // Alleen een superuser of admin mag data verwijderen.
+    if (!has_role('superuser')) {
+        die('Ongeautoriseerde actie: U heeft geen rechten om een jacht te verwijderen.');
+    }
+
     $jachtId = (int)$_GET['id'];
 
     // --- Gebruik een prepared statement om SQL-injectie te voorkomen ---
@@ -12,13 +18,9 @@ if (isset($_GET['actie']) && $_GET['actie'] == 'verwijder' && isset($_GET['id'])
 
     // Voer de query uit
     if ($stmt->execute()) {
-        // Succesvol verwijderd, stuur gebruiker terug naar het overzicht
-        // TODO: Voeg een succesmelding toe (Fase 4)
-        header("Location: jachten.php");
+        header("Location: jachten_overzicht.php");
         exit;
     } else {
-        // Fout bij verwijderen
-        // TODO: Voeg een foutmelding toe (Fase 4)
         die("Er is een fout opgetreden bij het verwijderen van het jacht.");
     }
 

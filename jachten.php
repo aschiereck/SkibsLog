@@ -65,13 +65,14 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
 <section class="content-page">
     <div class="page-header">
         <h2><?php echo htmlspecialchars($jacht['MerkWerf'] . ' - ' . $jacht['ModelType']); ?></h2>
-        <div>
-            <a href="jacht_form.php?id=<?php echo $jachtId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
-        </div>
+        <?php if (has_role('user')): ?>
+            <div>
+                <a href="jacht_form.php?id=<?php echo $jachtId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="interactive-container">
-        <!-- Linkerkolom: Hoofdkaart van het jacht -->
         <div class="main-card-container">
             <div class="main-card">
                 <h3><?php echo htmlspecialchars($jacht['NaamSchip']); ?></h3>
@@ -94,7 +95,6 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
 
-        <!-- Rechterkolom: Relatiekaarten met tabs -->
         <div class="tabs-container">
             <ul class="tab-list">
                 <?php foreach ($relaties as $index => $relatie): 
@@ -105,10 +105,10 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
                         <?php echo htmlspecialchars($relatieNaam); ?>
                     </li>
                 <?php endforeach; ?>
-                <!-- Nieuwe '+'-knop/tabblad -->
-                <li class="tab-item add-new-tab" data-tab="tab-add-new"><i class="fa-solid fa-plus"></i></li>
+                <?php if (has_role('user')): ?>
+                    <li class="tab-item add-new-tab" data-tab="tab-add-new"><i class="fa-solid fa-plus"></i></li>
+                <?php endif; ?>
             </ul>
-
             <div class="tab-content">
                 <?php foreach ($relaties as $index => $relatie):
                     $relatieNaam = ($relatie['KlantType'] == 'Bedrijf') ? $relatie['Bedrijfsnaam'] : $relatie['Voornaam'] . ' ' . $relatie['Achternaam'];
@@ -151,7 +151,6 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
     </div>
 </section>
 
-<!-- JavaScript voor de tab-functionaliteit -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tabs = document.querySelectorAll('.tab-item');

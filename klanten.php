@@ -63,13 +63,14 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
 <section class="content-page">
     <div class="page-header">
         <h2><?php echo $klantNaam; ?></h2>
-        <div>
-            <a href="klant_form.php?id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
-        </div>
+        <?php if (has_role('user')): ?>
+            <div>
+                <a href="klant_form.php?id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="interactive-container">
-        <!-- Linkerkolom: Hoofdkaart van de klant -->
         <div class="main-card-container">
              <div class="main-card">
                 <h3><?php echo $klantNaam; ?></h3>
@@ -83,8 +84,7 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
                 <p class="main-card-description"><?php echo nl2br(htmlspecialchars($klant['Notities'])); ?></p>
             </div>
         </div>
-
-        <!-- Rechterkolom: Relatiekaarten van schepen met tabs -->
+        
         <div class="tabs-container">
             <ul class="tab-list">
                 <?php foreach ($relaties as $index => $relatie): 
@@ -94,10 +94,10 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
                         <?php echo htmlspecialchars($relatie['NaamSchip']); ?>
                     </li>
                 <?php endforeach; ?>
-                 <!-- Nieuwe '+'-knop/tabblad -->
-                <li class="tab-item add-new-tab" data-tab="tab-add-new"><i class="fa-solid fa-plus"></i></li>
+                 <?php if (has_role('user')): ?>
+                    <li class="tab-item add-new-tab" data-tab="tab-add-new"><i class="fa-solid fa-plus"></i></li>
+                <?php endif; ?>
             </ul>
-
             <div class="tab-content">
                 <?php foreach ($relaties as $index => $relatie):
                     $relatieClass = 'rel-' . strtolower(str_replace(' ', '-', $relatie['RelatieType']));
@@ -117,7 +117,6 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
                     </div>
                 <?php endforeach; ?>
                 
-                <!-- Nieuwe content voor de '+'-tab -->
                 <div class="relation-card" id="tab-add-new">
                     <div class="relation-card-header">
                         <h4>Nieuwe Schiprelatie Toevoegen</h4>
@@ -133,7 +132,6 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
     </div>
 </section>
 
-<!-- JavaScript voor de tab-functionaliteit -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tabs = document.querySelectorAll('.tab-item');
