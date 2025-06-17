@@ -1069,3 +1069,157 @@ tbody tr a.row-link {
     margin-bottom: 1rem;
     border: 1px solid var(--border-color);
 }
+/* ==================== Detail Page Tabs ==================== */
+.detail-tabs {
+    width: 100%;
+}
+
+.tab-link-bar {
+    display: flex;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.tab-link {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; /* Zorgt dat de active border de lijn overlapt */
+    transition: all 0.2s ease;
+}
+
+.tab-link:hover {
+    color: var(--primary-color);
+}
+
+.tab-link.active {
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-pane h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.table-container-condensed table {
+    border-spacing: 0;
+}
+.table-container-condensed a {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+.table-container-condensed thead {
+    display: table-header-group; /* Zorg dat de koppen getoond worden */
+    background-color: transparent;
+}
+.table-container-condensed th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+.table-container-condensed td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.table-container-condensed tbody tr {
+    background-color: transparent;
+    box-shadow: none;
+}
+.table-container-condensed tbody tr:hover {
+    background-color: #f7f9fc;
+    transform: none;
+}
+/* ==================== Edit Icons & Motor Card ==================== */
+.card-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.card-header-with-action h3, .card-header-with-action h4 {
+    margin-bottom: 0;
+}
+
+/* Verbeterde stijl voor de actie-icoontjes */
+.card-action-icon, .card-action-icon-small {
+    font-size: 0.9rem; /* Iets verkleind voor een subtielere look */
+    color: var(--secondary-color);
+    background-color: var(--background-color);
+    border-radius: 50%; /* Maakt het icoon rond */
+    width: 32px; /* Vaste breedte */
+    height: 32px; /* Vaste hoogte */
+    display: inline-flex; /* Nodig voor centreren */
+    justify-content: center; /* Horizontaal centreren */
+    align-items: center; /* Verticaal centreren */
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+.card-action-icon-small {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+}
+
+.card-action-icon:hover, .card-action-icon-small:hover {
+    color: var(--widget-background); /* Icoon wordt wit */
+    background-color: var(--accent-color); /* Achtergrond wordt de accentkleur */
+    border-color: var(--accent-color);
+    transform: scale(1.1); /* Geeft een subtiel groei-effect */
+}
+
+.motor-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f7f9fc;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+.motor-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+.motor-details strong {
+    font-weight: 600;
+}
+.motor-details span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+.form-delete-button {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+.form-delete-button:hover {
+    color: #c53030;
+}
