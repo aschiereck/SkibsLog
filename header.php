@@ -16,6 +16,7 @@ $huidige_gebruiker = "Mark de Boer";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- De titel wordt per pagina ingesteld -->
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - SkibsLog' : 'SkibsLog'; ?></title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
     <!-- Link naar de stylesheet (relatief pad) -->
     <link rel="stylesheet" href="style.css">

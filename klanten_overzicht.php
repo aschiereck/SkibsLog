@@ -22,17 +22,18 @@ $result_klanten = $db_connect->query($query_klanten);
                     <th>Type</th>
                     <th>Woonplaats</th>
                     <th>Emailadres</th>
-                    <th>Acties</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($result_klanten && $result_klanten->num_rows > 0): ?>
                     <?php while($klant = $result_klanten->fetch_assoc()): ?>
                         <tr>
-                            <td data-label="ID"><?php echo $klant['KlantID']; ?></td>
+                            <td data-label="ID">
+                                <a href="klanten.php?id=<?php echo $klant['KlantID']; ?>" class="row-link"></a>
+                                <?php echo $klant['KlantID']; ?>
+                            </td>
                             <td data-label="Naam">
                                 <?php
-                                    // Toon bedrijfsnaam of persoonlijke naam gebaseerd op type
                                     if ($klant['KlantType'] == 'Bedrijf') {
                                         echo htmlspecialchars($klant['Bedrijfsnaam']);
                                     } else {
@@ -42,15 +43,11 @@ $result_klanten = $db_connect->query($query_klanten);
                             </td>
                             <td data-label="Type"><?php echo htmlspecialchars($klant['KlantType']); ?></td>
                             <td data-label="Woonplaats"><?php echo htmlspecialchars($klant['Woonplaats']); ?></td>
-                            <td data-label="Emailadres"><a href="mailto:<?php echo htmlspecialchars($klant['Emailadres']); ?>"><?php echo htmlspecialchars($klant['Emailadres']); ?></a></td>
-                            <td data-label="Acties" class="actions">
-                                <a href="klanten.php?id=<?php echo $klant['KlantID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
-                                <a href="klant_form.php?id=<?php echo $klant['KlantID']; ?>" title="Wijzigen"><i class="fa-solid fa-pencil"></i></a>
-                            </td>
+                            <td data-label="Emailadres"><?php echo htmlspecialchars($klant['Emailadres']); ?></td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr><td colspan="6">Geen klanten gevonden.</td></tr>
+                    <tr><td colspan="5">Geen klanten gevonden.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

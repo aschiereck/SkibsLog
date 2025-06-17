@@ -25,12 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $klant['Emailadres'] = trim($_POST['Emailadres']);
     $klant['Notities'] = trim($_POST['Notities']);
     
-    // Validatie
-    if ($klant['KlantType'] == 'Bedrijf' && empty($klant['Bedrijfsnaam'])) {
-        $errors[] = "Bedrijfsnaam is verplicht voor type 'Bedrijf'.";
-    }
-    if ($klant['KlantType'] != 'Bedrijf' && empty($klant['Achternaam'])) {
-        $errors[] = "Achternaam is verplicht.";
+    // --- GECORRIGEERDE VALIDATIE ---
+    if ($klant['KlantType'] == 'Bedrijf') {
+        if (empty($klant['Bedrijfsnaam'])) {
+            $errors[] = "Bedrijfsnaam is verplicht voor het klanttype 'Bedrijf'.";
+        }
+    } else { // Voor 'Persoon' of 'Echtpaar/Familie'
+        if (empty($klant['Achternaam'])) {
+            $errors[] = "Achternaam is verplicht voor de klanttypes 'Persoon' en 'Echtpaar/Familie'.";
+        }
     }
 
     if (empty($errors)) {
@@ -43,8 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($stmt->execute()) {
-            if (!$klantId) $klantId = $db_connect->insert_id;
-            header("Location: klant_detail.php?id=" . $klantId);
+            // --- GECORRIGEERDE REDIRECT ---
+            // Na het opslaan gaan we terug naar het overzicht, niet de detailpagina.
+            header("Location: klanten_overzicht.php"); 
             exit;
         } else {
             $errors[] = "Databasefout: " . $stmt->error;
@@ -66,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="content-page">
     <div class="page-header">
         <h2>Klant <?php echo $formAction; ?></h2>
-        <a href="klanten.php" class="action-button-header-secondary"><i class="fa-solid fa-xmark"></i> Annuleren</a>
+        <a href="klanten_overzicht.php" class="action-button-header-secondary"><i class="fa-solid fa-xmark"></i> Annuleren</a>
     </div>
 
      <?php if (!empty($errors)): ?>
@@ -76,57 +80,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 
-    <form action="klant_form.php" method="post" class="form-grid">
-        <input type="hidden" name="KlantID" value="<?php echo htmlspecialchars($klant['KlantID']); ?>">
-        
-        <div class="form-group">
-            <label for="KlantType">Klanttype</label>
-            <select id="KlantType" name="KlantType">
-                <option value="Persoon" <?php echo ($klant['KlantType'] == 'Persoon') ? 'selected' : ''; ?>>Persoon</option>
-                <option value="Echtpaar/Familie" <?php echo ($klant['KlantType'] == 'Echtpaar/Familie') ? 'selected' : ''; ?>>Echtpaar/Familie</option>
-                <option value="Bedrijf" <?php echo ($klant['KlantType'] == 'Bedrijf') ? 'selected' : ''; ?>>Bedrijf</option>
-            </select>
+    <div class="form-page-container">
+        <div class="form-main-content">
+            <form action="klant_form.php" method="post" class="form-grid">
+                <input type="hidden" name="KlantID" value="<?php echo htmlspecialchars($klant['KlantID']); ?>">
+                
+                <fieldset>
+                    <legend>Persoons- / Bedrijfsgegevens</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="KlantType">Klanttype</label>
+                            <select id="KlantType" name="KlantType">
+                                <option value="Persoon" <?php echo ($klant['KlantType'] == 'Persoon') ? 'selected' : ''; ?>>Persoon</option>
+                                <option value="Echtpaar/Familie" <?php echo ($klant['KlantType'] == 'Echtpaar/Familie') ? 'selected' : ''; ?>>Echtpaar/Familie</option>
+                                <option value="Bedrijf" <?php echo ($klant['KlantType'] == 'Bedrijf') ? 'selected' : ''; ?>>Bedrijf</option>
+                            </select>
+                        </div>
+                         <div class="form-group">
+                            <label for="Bedrijfsnaam">Bedrijfsnaam</label>
+                            <input type="text" id="Bedrijfsnaam" name="Bedrijfsnaam" value="<?php echo htmlspecialchars($klant['Bedrijfsnaam']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="Voornaam">Voornaam</label>
+                            <input type="text" id="Voornaam" name="Voornaam" value="<?php echo htmlspecialchars($klant['Voornaam']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="Achternaam">Achternaam</label>
+                            <input type="text" id="Achternaam" name="Achternaam" value="<?php echo htmlspecialchars($klant['Achternaam']); ?>">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Adresgegevens</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Adres">Adres</label>
+                            <input type="text" id="Adres" name="Adres" value="<?php echo htmlspecialchars($klant['Adres']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="Postcode">Postcode</label>
+                            <input type="text" id="Postcode" name="Postcode" value="<?php echo htmlspecialchars($klant['Postcode']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="Woonplaats">Woonplaats</label>
+                            <input type="text" id="Woonplaats" name="Woonplaats" value="<?php echo htmlspecialchars($klant['Woonplaats']); ?>">
+                        </div>
+                        <!-- TOEGEVOEGD VELD -->
+                        <div class="form-group">
+                            <label for="Land">Land</label>
+                            <input type="text" id="Land" name="Land" value="<?php echo htmlspecialchars($klant['Land']); ?>">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Contact</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Telefoonnummer1">Telefoonnummer</label>
+                            <input type="tel" id="Telefoonnummer1" name="Telefoonnummer1" value="<?php echo htmlspecialchars($klant['Telefoonnummer1']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="Emailadres">E-mailadres</label>
+                            <input type="email" id="Emailadres" name="Emailadres" value="<?php echo htmlspecialchars($klant['Emailadres']); ?>">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Overig</legend>
+                    <div class="form-group form-group-full">
+                        <label for="Notities">Notities</label>
+                        <textarea id="Notities" name="Notities" rows="4"><?php echo htmlspecialchars($klant['Notities']); ?></textarea>
+                    </div>
+                </fieldset>
+                
+                <div class="form-group form-group-full">
+                    <button type="submit" class="action-button-header"><?php echo $formAction; ?> Klant</button>
+                </div>
+            </form>
         </div>
-         <div class="form-group">
-            <label for="Bedrijfsnaam">Bedrijfsnaam</label>
-            <input type="text" id="Bedrijfsnaam" name="Bedrijfsnaam" value="<?php echo htmlspecialchars($klant['Bedrijfsnaam']); ?>">
+        <div class="form-sidebar">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-user-plus"></i> Klant beheren</h3>
+                <p>Vul hier de gegevens in van een nieuwe of bestaande klant. Zorg ervoor dat de contactgegevens actueel zijn.</p>
+                <ul>
+                    <li>Bij een <strong>Bedrijf</strong> is de bedrijfsnaam leidend.</li>
+                    <li>Bij een <strong>Persoon</strong> is de achternaam verplicht.</li>
+                </ul>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="Voornaam">Voornaam</label>
-            <input type="text" id="Voornaam" name="Voornaam" value="<?php echo htmlspecialchars($klant['Voornaam']); ?>">
-        </div>
-        <div class="form-group">
-            <label for="Achternaam">Achternaam</label>
-            <input type="text" id="Achternaam" name="Achternaam" value="<?php echo htmlspecialchars($klant['Achternaam']); ?>" required>
-        </div>
-        <div class="form-group">
-            <label for="Adres">Adres</label>
-            <input type="text" id="Adres" name="Adres" value="<?php echo htmlspecialchars($klant['Adres']); ?>">
-        </div>
-        <div class="form-group">
-            <label for="Postcode">Postcode</label>
-            <input type="text" id="Postcode" name="Postcode" value="<?php echo htmlspecialchars($klant['Postcode']); ?>">
-        </div>
-        <div class="form-group">
-            <label for="Woonplaats">Woonplaats</label>
-            <input type="text" id="Woonplaats" name="Woonplaats" value="<?php echo htmlspecialchars($klant['Woonplaats']); ?>">
-        </div>
-        <div class="form-group">
-            <label for="Telefoonnummer1">Telefoonnummer</label>
-            <input type="tel" id="Telefoonnummer1" name="Telefoonnummer1" value="<?php echo htmlspecialchars($klant['Telefoonnummer1']); ?>">
-        </div>
-        <div class="form-group form-group-full">
-            <label for="Emailadres">E-mailadres</label>
-            <input type="email" id="Emailadres" name="Emailadres" value="<?php echo htmlspecialchars($klant['Emailadres']); ?>">
-        </div>
-        <div class="form-group form-group-full">
-            <label for="Notities">Notities</label>
-            <textarea id="Notities" name="Notities" rows="4"><?php echo htmlspecialchars($klant['Notities']); ?></textarea>
-        </div>
-        <div class="form-group form-group-full">
-            <button type="submit" class="action-button-header"><?php echo $formAction; ?> Klant</button>
-        </div>
-    </form>
+    </div>
 </section>
 
 <?php require 'footer.php'; ?>

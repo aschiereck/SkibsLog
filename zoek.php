@@ -23,7 +23,7 @@ if (!empty($zoekterm)) {
 
     // --- Bouw de query voor Schepen ---
     $sql_jachten = "
-        SELECT SchipID, Status, NaamSchip, MerkWerf, ModelType, Bouwjaar, Vraagprijs, Ligplaats 
+        SELECT SchipID, Status, NaamSchip, MerkWerf, ModelType
         FROM Schepen 
         WHERE NaamSchip LIKE ? OR MerkWerf LIKE ? OR ModelType LIKE ?
     ";
@@ -45,7 +45,7 @@ if (!empty($zoekterm)) {
 
     // --- Bouw de query voor Klanten ---
     $sql_klanten = "
-        SELECT KlantID, KlantType, Voornaam, Achternaam, Bedrijfsnaam, Woonplaats, Emailadres 
+        SELECT KlantID, KlantType, Voornaam, Achternaam, Bedrijfsnaam, Woonplaats
         FROM Klanten 
         WHERE Voornaam LIKE ? OR Achternaam LIKE ? OR Bedrijfsnaam LIKE ? OR Emailadres LIKE ?
     ";
@@ -71,7 +71,6 @@ if (!empty($zoekterm)) {
     <div class="page-header">
         <h2><?php echo $pageTitle; ?></h2>
         <?php if (!empty($zoekterm) && $scope == 'snel'): ?>
-            <!-- Toon deze knop alleen als er een snelle zoekopdracht is uitgevoerd -->
             <form action="zoek.php" method="get">
                 <input type="hidden" name="q" value="<?php echo htmlspecialchars($zoekterm); ?>">
                 <input type="hidden" name="scope" value="alles">
@@ -91,12 +90,12 @@ if (!empty($zoekterm)) {
                     <tbody>
                         <?php foreach($results_jachten as $jacht): ?>
                             <tr>
-                                <td data-label="Naam"><?php echo htmlspecialchars($jacht['NaamSchip']); ?></td>
+                                <td data-label="Naam">
+                                    <a href="jachten.php?id=<?php echo $jacht['SchipID']; ?>" class="row-link"></a>
+                                    <?php echo htmlspecialchars($jacht['NaamSchip']); ?>
+                                </td>
                                 <td data-label="Merk & Model"><?php echo htmlspecialchars($jacht['MerkWerf'] . ' ' . $jacht['ModelType']); ?></td>
                                 <td data-label="Status"><span class="status-<?php echo strtolower(str_replace(' ', '-', $jacht['Status'])); ?>"><?php echo htmlspecialchars($jacht['Status']); ?></span></td>
-                                <td data-label="Acties" class="actions">
-                                    <a href="jachten.php?id=<?php echo $jacht['SchipID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
-                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -117,6 +116,7 @@ if (!empty($zoekterm)) {
                         <?php foreach($results_klanten as $klant): ?>
                             <tr>
                                 <td data-label="Naam">
+                                     <a href="klanten.php?id=<?php echo $klant['KlantID']; ?>" class="row-link"></a>
                                     <?php
                                         if ($klant['KlantType'] == 'Bedrijf') {
                                             echo htmlspecialchars($klant['Bedrijfsnaam']);
@@ -127,9 +127,6 @@ if (!empty($zoekterm)) {
                                 </td>
                                 <td data-label="Type"><?php echo htmlspecialchars($klant['KlantType']); ?></td>
                                 <td data-label="Woonplaats"><?php echo htmlspecialchars($klant['Woonplaats']); ?></td>
-                                <td data-label="Acties" class="actions">
-                                    <a href="klanten.php?id=<?php echo $klant['KlantID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
-                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

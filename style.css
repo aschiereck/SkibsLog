@@ -1034,4 +1034,24 @@ td.positive {
     padding-top: 1rem;
 }
 
-/* test
+/* ==================== Clickable Table Row Style (Fix) ==================== */
+
+/* Maak de tabelrij zelf de container voor de link */
+tbody tr {
+    position: relative;
+    /* Geeft de gebruiker een visuele hint dat de rij klikbaar is */
+    cursor: pointer;
+}
+
+/* Maak van de link een onzichtbare overlay die de hele rij vult */
+tbody tr a.row-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Zorgt ervoor dat de link boven de content van de cellen ligt */
+    z-index: 1; 
+    /* Voor debuggen: background-color: rgba(255, 0, 0, 0.1); */
+}
+
