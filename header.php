@@ -28,19 +28,21 @@ $huidige_gebruiker = "Mark de Boer";
 </head>
 <body>
 
+    <!-- Overlay voor mobiel menu -->
+    <div class="sidebar-overlay"></div>
+
     <div class="grid-container">
         
         <!-- ==================== Hoofd Navigatie (Sidebar) ==================== -->
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar-nav">
             <div class="sidebar-header">
                 <i class="fa-solid fa-anchor"></i>
                 <h1>SkibsLog</h1>
             </div>
             <ul class="sidebar-menu">
-                <!-- Controleer per menu-item of het de huidige pagina is -->
                 <li class="<?php echo ($currentPage == 'index.php') ? 'active' : ''; ?>"><a href="index.php"><i class="fa-solid fa-border-all"></i><span>Dashboard</span></a></li>
-                <li class="<?php echo ($currentPage == 'jachten.php') ? 'active' : ''; ?>"><a href="jachten.php"><i class="fa-solid fa-ship"></i><span>Motorjachten</span></a></li>
-                <li class="<?php echo ($currentPage == 'klanten.php') ? 'active' : ''; ?>"><a href="klanten.php"><i class="fa-solid fa-users"></i><span>Klanten</span></a></li>
+                <li class="<?php echo ($currentPage == 'jachten_overzicht.php') ? 'active' : ''; ?>"><a href="jachten_overzicht.php"><i class="fa-solid fa-ship"></i><span>Motorjachten</span></a></li>
+                <li class="<?php echo ($currentPage == 'klanten_overzicht.php') ? 'active' : ''; ?>"><a href="klanten_overzicht.php"><i class="fa-solid fa-users"></i><span>Klanten</span></a></li>
                 <li class="<?php echo ($currentPage == 'agenda.php') ? 'active' : ''; ?>"><a href="agenda.php"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></a></li>
                 <li class="<?php echo ($currentPage == 'rapportages.php') ? 'active' : ''; ?>"><a href="rapportages.php"><i class="fa-solid fa-chart-pie"></i><span>Rapportages</span></a></li>
                 <li class="<?php echo ($currentPage == 'biedingen.php') ? 'active' : ''; ?>"><a href="biedingen.php"><i class="fa-solid fa-comments-dollar"></i><span>Biedingen</span></a></li>
@@ -55,6 +57,10 @@ $huidige_gebruiker = "Mark de Boer";
             
             <!-- Header van de content -->
             <header class="main-header">
+                <!-- Hamburgermenu knop -->
+                <button class="hamburger-menu" id="hamburger-menu-toggle" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <div class="header-search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="search" placeholder="Zoek een jacht, klant of contactlog...">
@@ -66,3 +72,23 @@ $huidige_gebruiker = "Mark de Boer";
                 </div>
             </header>
 
+<!-- JavaScript voor mobiel menu -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const hamburgerToggle = document.getElementById('hamburger-menu-toggle');
+    const sidebar = document.getElementById('sidebar-nav');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    function toggleMenu() {
+        sidebar.classList.toggle('is-visible');
+        overlay.classList.toggle('is-visible');
+    }
+
+    if (hamburgerToggle) {
+        hamburgerToggle.addEventListener('click', toggleMenu);
+    }
+    if (overlay) {
+        overlay.addEventListener('click', toggleMenu);
+    }
+});
+</script>

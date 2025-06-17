@@ -29,8 +29,8 @@ $result_klanten = $db_connect->query($query_klanten);
                 <?php if ($result_klanten && $result_klanten->num_rows > 0): ?>
                     <?php while($klant = $result_klanten->fetch_assoc()): ?>
                         <tr>
-                            <td><?php echo $klant['KlantID']; ?></td>
-                            <td>
+                            <td data-label="ID"><?php echo $klant['KlantID']; ?></td>
+                            <td data-label="Naam">
                                 <?php
                                     // Toon bedrijfsnaam of persoonlijke naam gebaseerd op type
                                     if ($klant['KlantType'] == 'Bedrijf') {
@@ -40,10 +40,10 @@ $result_klanten = $db_connect->query($query_klanten);
                                     }
                                 ?>
                             </td>
-                            <td><?php echo htmlspecialchars($klant['KlantType']); ?></td>
-                            <td><?php echo htmlspecialchars($klant['Woonplaats']); ?></td>
-                            <td><a href="mailto:<?php echo htmlspecialchars($klant['Emailadres']); ?>"><?php echo htmlspecialchars($klant['Emailadres']); ?></a></td>
-                            <td class="actions">
+                            <td data-label="Type"><?php echo htmlspecialchars($klant['KlantType']); ?></td>
+                            <td data-label="Woonplaats"><?php echo htmlspecialchars($klant['Woonplaats']); ?></td>
+                            <td data-label="Emailadres"><a href="mailto:<?php echo htmlspecialchars($klant['Emailadres']); ?>"><?php echo htmlspecialchars($klant['Emailadres']); ?></a></td>
+                            <td data-label="Acties" class="actions">
                                 <a href="klanten.php?id=<?php echo $klant['KlantID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
                                 <a href="klant_form.php?id=<?php echo $klant['KlantID']; ?>" title="Wijzigen"><i class="fa-solid fa-pencil"></i></a>
                             </td>

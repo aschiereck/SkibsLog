@@ -25,10 +25,11 @@ if ($result_klant->num_rows === 0) {
 $klant = $result_klant->fetch_assoc();
 
 if ($klant['KlantType'] == 'Bedrijf') {
-    $pageTitle = htmlspecialchars($klant['Bedrijfsnaam']);
+    $klantNaam = htmlspecialchars($klant['Bedrijfsnaam']);
 } else {
-    $pageTitle = htmlspecialchars($klant['Voornaam'] . ' ' . $klant['Achternaam']);
+    $klantNaam = htmlspecialchars($klant['Voornaam'] . ' ' . $klant['Achternaam']);
 }
+$pageTitle = $klantNaam;
 
 // --- Haal ALLE gerelateerde schepen op ---
 $stmt_relaties = $db_connect->prepare("
@@ -61,7 +62,7 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
 
 <section class="content-page">
     <div class="page-header">
-        <h2>Detailoverzicht: <?php echo $pageTitle; ?></h2>
+        <h2><?php echo $klantNaam; ?></h2>
         <div>
             <a href="klant_form.php?id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-pencil"></i> Wijzigen</a>
         </div>
@@ -71,12 +72,12 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
         <!-- Linkerkolom: Hoofdkaart van de klant -->
         <div class="main-card-container">
              <div class="main-card">
-                <h3><?php echo $pageTitle; ?></h3>
+                <h3><?php echo $klantNaam; ?></h3>
                 <p class="main-card-subtitle"><?php echo htmlspecialchars($klant['KlantType']); ?></p>
                 <div class="main-card-contact">
-                    <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($klant['Adres'] . ', ' . $klant['Woonplaats']); ?></p>
+                    <p><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($klant['Adres'] . ', ' . $klant['Postcode'] . ' ' . $klant['Woonplaats']); ?></p>
                     <p><i class="fa-solid fa-phone"></i> <?php echo htmlspecialchars($klant['Telefoonnummer1']); ?></p>
-                    <p><i class="fa-solid fa-envelope"></i> <?php echo htmlspecialchars($klant['Emailadres']); ?></p>
+                    <p><i class="fa-solid fa-envelope"></i> <a href="mailto:<?php echo htmlspecialchars($klant['Emailadres']); ?>"><?php echo htmlspecialchars($klant['Emailadres']); ?></a></p>
                 </div>
                 <h4>Notities</h4>
                 <p class="main-card-description"><?php echo nl2br(htmlspecialchars($klant['Notities'])); ?></p>
@@ -85,36 +86,49 @@ $relaties = $result_relaties->fetch_all(MYSQLI_ASSOC);
 
         <!-- Rechterkolom: Relatiekaarten van schepen met tabs -->
         <div class="tabs-container">
-            <?php if (!empty($relaties)): ?>
-                <ul class="tab-list">
-                    <?php foreach ($relaties as $index => $relatie): ?>
-                        <li class="tab-item <?php echo ($index == 0) ? 'active' : ''; ?>" data-tab="tab-<?php echo $relatie['SchipID']; ?>">
-                            <?php echo htmlspecialchars($relatie['NaamSchip']); ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
+            <ul class="tab-list">
+                <?php foreach ($relaties as $index => $relatie): 
+                    $relatieClass = 'rel-' . strtolower(str_replace(' ', '-', $relatie['RelatieType']));
+                ?>
+                    <li class="tab-item <?php echo $relatieClass; ?> <?php echo ($index == 0) ? 'active' : ''; ?>" data-tab="tab-<?php echo $relatie['SchipID']; ?>">
+                        <?php echo htmlspecialchars($relatie['NaamSchip']); ?>
+                    </li>
+                <?php endforeach; ?>
+                 <!-- Nieuwe '+'-knop/tabblad -->
+                <li class="tab-item add-new-tab" data-tab="tab-add-new"><i class="fa-solid fa-plus"></i></li>
+            </ul>
 
-                <div class="tab-content">
-                    <?php foreach ($relaties as $index => $relatie): ?>
-                        <?php $relatieClass = 'rel-' . strtolower(str_replace(' ', '-', $relatie['RelatieType'])); ?>
-                        <div class="relation-card <?php echo $relatieClass; ?> <?php echo ($index == 0) ? 'active' : ''; ?>" id="tab-<?php echo $relatie['SchipID']; ?>">
-                            <div class="relation-card-header">
-                                <h4><?php echo htmlspecialchars($relatie['NaamSchip']); ?></h4>
-                                <span class="relation-type"><?php echo htmlspecialchars($relatie['RelatieType']); ?></span>
-                            </div>
-                            <div class="relation-card-body">
-                                <p><strong><?php echo htmlspecialchars($relatie['MerkWerf'] . ' ' . $relatie['ModelType']); ?></strong></p>
-                                <p>Prijs: € <?php echo number_format($relatie['Vraagprijs'], 0, ',', '.'); ?></p>
-                            </div>
-                            <div class="relation-card-footer">
-                                <a href="jachten.php?id=<?php echo $relatie['SchipID']; ?>" class="card-button">Bekijk Jacht Volledig</a>
-                            </div>
+            <div class="tab-content">
+                <?php foreach ($relaties as $index => $relatie):
+                    $relatieClass = 'rel-' . strtolower(str_replace(' ', '-', $relatie['RelatieType']));
+                ?>
+                    <div class="relation-card <?php echo $relatieClass; ?> <?php echo ($index == 0) ? 'active' : ''; ?>" id="tab-<?php echo $relatie['SchipID']; ?>">
+                        <div class="relation-card-header">
+                            <h4><?php echo htmlspecialchars($relatie['MerkWerf'] . ' ' . $relatie['ModelType']); ?></h4>
+                            <span class="relation-type"><?php echo htmlspecialchars($relatie['RelatieType']); ?></span>
                         </div>
-                    <?php endforeach; ?>
+                        <div class="relation-card-body">
+                            <p><strong>Status:</strong> <span class="status-<?php echo strtolower(str_replace(' ', '-', $relatie['Status'])); ?>"><?php echo htmlspecialchars($relatie['Status']); ?></span></p>
+                            <p><strong>Vraagprijs:</strong> € <?php echo number_format($relatie['Vraagprijs'], 0, ',', '.'); ?></p>
+                        </div>
+                        <div class="relation-card-footer">
+                            <a href="jachten.php?id=<?php echo $relatie['SchipID']; ?>" class="card-button">Bekijk Jacht Volledig</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                
+                <!-- Nieuwe content voor de '+'-tab -->
+                <div class="relation-card" id="tab-add-new">
+                    <div class="relation-card-header">
+                        <h4>Nieuwe Schiprelatie Toevoegen</h4>
+                    </div>
+                    <div class="add-new-actions">
+                        <a href="bezichtiging_form.php?klant_id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-calendar-plus"></i> Plan Bezichtiging</a>
+                        <a href="bod_form.php?klant_id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-gavel"></i> Registreer Bod</a>
+                        <a href="eigenaar_form.php?klant_id=<?php echo $klantId; ?>" class="action-button-header"><i class="fa-solid fa-user-check"></i> Koppel als Eigenaar</a>
+                    </div>
                 </div>
-            <?php else: ?>
-                <p>Geen schepen gevonden voor deze klant.</p>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 </section>
@@ -125,14 +139,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabs = document.querySelectorAll('.tab-item');
     const cards = document.querySelectorAll('.relation-card');
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            tabs.forEach(t => t.classList.remove('active'));
-            cards.forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+    if (tabs.length > 0) {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                tabs.forEach(t => t.classList.remove('active'));
+                cards.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            });
         });
-    });
+    }
 });
 </script>
 

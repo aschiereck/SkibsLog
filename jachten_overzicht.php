@@ -31,14 +31,14 @@ $result_jachten = $db_connect->query($query_jachten);
                 <?php if ($result_jachten && $result_jachten->num_rows > 0): ?>
                     <?php while($jacht = $result_jachten->fetch_assoc()): ?>
                         <tr>
-                            <td><?php echo $jacht['SchipID']; ?></td>
-                            <td><?php echo htmlspecialchars($jacht['NaamSchip']); ?></td>
-                            <td><?php echo htmlspecialchars($jacht['MerkWerf'] . ' ' . $jacht['ModelType']); ?></td>
-                            <td><?php echo $jacht['Bouwjaar']; ?></td>
-                            <td><span class="status-<?php echo strtolower(str_replace(' ', '-', $jacht['Status'])); ?>"><?php echo htmlspecialchars($jacht['Status']); ?></span></td>
-                            <td>€ <?php echo number_format($jacht['Vraagprijs'], 2, ',', '.'); ?></td>
-                            <td><?php echo htmlspecialchars($jacht['Ligplaats']); ?></td>
-                            <td class="actions">
+                            <td data-label="ID"><?php echo $jacht['SchipID']; ?></td>
+                            <td data-label="Naam"><?php echo htmlspecialchars($jacht['NaamSchip']); ?></td>
+                            <td data-label="Merk & Model"><?php echo htmlspecialchars($jacht['MerkWerf'] . ' ' . $jacht['ModelType']); ?></td>
+                            <td data-label="Bouwjaar"><?php echo $jacht['Bouwjaar']; ?></td>
+                            <td data-label="Status"><span class="status-<?php echo strtolower(str_replace(' ', '-', $jacht['Status'])); ?>"><?php echo htmlspecialchars($jacht['Status']); ?></span></td>
+                            <td data-label="Vraagprijs">€ <?php echo number_format($jacht['Vraagprijs'], 0, ',', '.'); ?></td>
+                            <td data-label="Ligplaats"><?php echo htmlspecialchars($jacht['Ligplaats']); ?></td>
+                            <td data-label="Acties" class="actions">
                                 <a href="jachten.php?id=<?php echo $jacht['SchipID']; ?>" title="Bekijken"><i class="fa-solid fa-eye"></i></a>
                                 <a href="jacht_form.php?id=<?php echo $jacht['SchipID']; ?>" title="Wijzigen"><i class="fa-solid fa-pencil"></i></a>
                             </td>

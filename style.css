@@ -509,7 +509,7 @@ ul {
     }
 }
 
-/* ==================== Responsive Hamburgermenu ==================== */
+/* ==================== Responsive Hamburgermenu (Definitieve Fix) ==================== */
 
 .hamburger-menu {
     display: none; /* Standaard verborgen op desktop */
@@ -518,7 +518,7 @@ ul {
     font-size: 1.5rem;
     color: var(--primary-color);
     cursor: pointer;
-    z-index: 1001; /* Zorgt dat het boven andere elementen staat */
+    z-index: 1001;
 }
 
 .sidebar-overlay {
@@ -528,7 +528,7 @@ ul {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 998; /* Onder de sidebar, boven de content */
+    z-index: 998;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -551,7 +551,7 @@ ul {
     }
     
     .header-search {
-        flex-grow: 1; /* Laat zoekbalk de ruimte vullen */
+        flex-grow: 1;
     }
 
     .sidebar {
@@ -561,11 +561,14 @@ ul {
         height: 100vh;
         width: 280px;
         z-index: 1000;
-        transform: translateX(-100%);
+        transform: translateX(-100%); /* Start buiten beeld */
         transition: transform 0.3s ease-in-out;
         box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        display: flex; 
+        /* display: flex is hier niet nodig, de default is block wat prima is */
     }
 
+    /* DEZE REGEL IS DE SLEUTEL: Zodra .is-visible wordt toegevoegd, schuift het menu in beeld */
     .sidebar.is-visible {
         transform: translateX(0);
     }
@@ -574,7 +577,7 @@ ul {
 /* Kleinere aanpassing voor hele kleine schermen */
 @media (max-width: 768px) {
      .main-header {
-        flex-direction: row; /* Zorgt dat hamburger links blijft */
+        flex-direction: row;
         gap: 1rem;
         align-items: center;
     }
@@ -582,6 +585,451 @@ ul {
         width: auto;
     }
     .header-user span {
-        display: none; /* Verberg de welkomsttekst */
+        display: none; /* Verberg de welkomsttekst op de kleinste schermen */
     }
+}
+
+/* ==================== AANPASSING VOOR GEKLEURDE TABBLADEN ==================== */
+
+/* Voegt een subtiele gekleurde rand toe aan de bovenkant van ELK tabblad */
+.tab-item {
+    border-top: 4px solid transparent; /* Standaard transparant */
+}
+
+/* Specifieke kleuren voor de border-top gebaseerd op relatie */
+.tab-item.rel-huidige-eigenaar { border-top-color: #3b82f6; } /* Blauw */
+.tab-item.rel-ex-eigenaar { border-top-color: #ef4444; } /* Rood */
+.tab-item.rel-geïnteresseerd { border-top-color: #22c55e; } /* Groen */
+
+/* Maak de rand dikker en de achtergrond wit als het tabblad ACTIEF is */
+.tab-item.active {
+    background-color: var(--widget-background);
+    font-weight: 600;
+    opacity: 1;
+    border-top-width: 4px; /* Zorgt dat de rand dik blijft */
+}
+
+/* ==================== Modern Form Layout ==================== */
+.form-page-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.form-main-content {
+    background-color: var(--widget-background);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.form-sidebar .info-card {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.info-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.info-card p {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.info-card ul {
+    list-style: none;
+    padding-left: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-card li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.info-card li::before {
+    content: '\f058'; /* Font Awesome check-circle icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--accent-color);
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+
+fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+legend {
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: 0 0.5rem;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+}
+
+.error-box {
+    background-color: #ffebe6;
+    border: 1px solid #ffc2b3;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+.error-box strong {
+    color: #c53030;
+}
+.error-box ul {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+    color: #c53030;
+}
+
+
+@media (max-width: 992px) {
+    .form-page-container {
+        grid-template-columns: 1fr;
+    }
+    .form-sidebar {
+        display: none; /* Verberg de hulpkaart op kleinere schermen voor eenvoud */
+    }
+}
+
+
+/* ==================== Grid Layout voor Formulieren ==================== */
+
+.form-grid {
+    display: grid;
+    /* Maak standaard 2 kolommen met gelijke breedte */
+    grid-template-columns: repeat(2, 1fr);
+    /* Ruimte tussen de kolommen en rijen (verkleind) */
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Een class om een veld over de volledige breedte te laten lopen */
+.form-group-full {
+    grid-column: 1 / -1; /* Loopt van de eerste tot de laatste kolomlijn */
+}
+
+
+/* ==================== Styling voor Formuliervelden ==================== */
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 0.4rem; /* Verkleind */
+    font-size: 0.85rem; /* Verkleind */
+    color: var(--secondary-color);
+}
+
+/* Algemene stijl voor alle input-velden, selects en textareas */
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.65rem; /* Verkleind */
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem; /* Verkleind */
+    background-color: #f0f4f8; /* Duidelijkere blauwgrijze tint */
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+/* Interactieve hover-staat toegevoegd */
+.form-group input[type="text"]:hover,
+.form-group input[type="tel"]:hover,
+.form-group input[type="email"]:hover,
+.form-group input[type="number"]:hover,
+.form-group input[type="date"]:hover,
+.form-group input[type="time"]:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    /* Randkleur aangepast naar de themakleur voor een duidelijker effect */
+    border-color: var(--secondary-color);
+}
+
+
+/* Visuele feedback wanneer een veld wordt geselecteerd */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: var(--widget-background); /* Wordt wit bij focus voor duidelijkheid */
+    box-shadow: 0 0 0 3px rgba(0, 170, 204, 0.2); /* Iets sterkere focus-gloed */
+}
+
+/* Zorg ervoor dat de textarea in grootte kan worden aangepast, maar alleen verticaal */
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ==================== Modern Overview Table/Card Style ==================== */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Zorgt voor scrollen op kleine schermen */
+}
+
+table {
+    width: 100%;
+    border-collapse: separate; /* Essentieel voor ruimte tussen de rijen */
+    border-spacing: 0 0.75rem; /* Creëert de verticale ruimte tussen de "kaarten" */
+}
+
+/* Verberg de standaard tabelkoppen */
+thead {
+    display: none;
+}
+
+/* Elke rij wordt een kaart */
+tbody tr {
+    background-color: var(--widget-background);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: table-row;
+}
+
+tbody tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Opmaak voor de cellen binnen de kaarten */
+tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border: 1px solid var(--border-color);
+    border-style: solid none; /* Alleen boven- en onderrand, die verbergen we later */
+}
+
+/* Ronde hoeken voor de eerste en laatste cel in de rij */
+tbody td:first-child {
+    border-left-style: solid;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+tbody td:last-child {
+    border-right-style: solid;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    text-align: right;
+}
+
+/* Voeg labels toe voor mobiele weergave */
+@media (max-width: 768px) {
+    thead {
+        display: none;
+    }
+    tbody, tr, td {
+        display: block;
+        width: 100%;
+    }
+    tr {
+        margin-bottom: 1rem;
+    }
+    td {
+        text-align: right; /* Waarde rechts */
+        position: relative;
+        padding-left: 50%; /* Ruimte voor het label */
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    td:before {
+        content: attr(data-label); /* Haal label op uit data-attribuut */
+        position: absolute;
+        left: 1.25rem;
+        width: calc(50% - 2.5rem);
+        text-align: left;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    /* Reset de hoeken en randen voor mobiel */
+    tbody td:first-child, tbody td:last-child {
+        border-radius: 0;
+        border-left-style: none;
+        border-right-style: none;
+    }
+    tbody tr:first-child td:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+     tbody tr:last-child td:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+}
+
+/* ==================== Report Page Styles ==================== */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.report-card, .report-table-card {
+    background-color: var(--widget-background);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.report-card h3, .report-table-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat-group {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.stat-group .stat-item h4 {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #777;
+    margin-bottom: 0.5rem;
+}
+
+.stat-group .stat-item span {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.comparison-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.popular-list {
+    list-style: none;
+    padding: 0;
+}
+
+.popular-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--background-color);
+}
+.popular-list li:last-child {
+    border-bottom: none;
+}
+.popular-list li span {
+    font-weight: 500;
+}
+.popular-list li small {
+    color: #777;
+}
+.popular-list li b {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+td.negative {
+    color: #c53030; /* Rood */
+}
+td.positive {
+    color: #2f855a; /* Groen */
+}
+
+/* ==================== Detail List in Main Card ==================== */
+.main-card-detaillist {
+    margin: 1.5rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-card-detaillist h4,
+.main-card h4 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.main-card-detaillist ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.main-card-detaillist li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.main-card-detaillist li strong {
+    font-weight: 500;
+    color: #555;
+}
+
+/* ==================== Styling voor de '+'-knop ==================== */
+
+.add-new-tab {
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-size: 1.2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.add-new-tab:hover, .add-new-tab.active {
+    background-color: var(--widget-background);
+    color: var(--primary-color);
+}
+
+.add-new-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
 }
