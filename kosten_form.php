@@ -59,12 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($kostId) { // UPDATE
             $stmt = $db_connect->prepare("UPDATE KostenLog SET Datum=?, Omschrijving=?, Bedrag=?, Type=? WHERE KostenID=?");
             $stmt->bind_param("ssdsi", $kost['Datum'], $kost['Omschrijving'], $kost['Bedrag'], $kost['Type'], $kostId);
+            $log_actie = "Kostenpost gewijzigd";
+            $log_details = "Kosten ID: $kostId voor Jacht ID: $jachtId";
         } else { // INSERT
             $stmt = $db_connect->prepare("INSERT INTO KostenLog (SchipID, Datum, Omschrijving, Bedrag, Type) VALUES (?, ?, ?, ?, ?)");
             $stmt->bind_param("isdss", $jachtId, $kost['Datum'], $kost['Omschrijving'], $kost['Bedrag'], $kost['Type']);
+            $log_actie = "Kostenpost aangemaakt";
         }
 
         if ($stmt->execute()) {
+            // --- LOGGING ---
+            if (!$kostId) { // Als het een nieuwe post is, haal de ID op
+                $log_details = "Nieuwe Kosten ID: " . $db_connect->insert_id . " voor Jacht ID: $jachtId";
+            }
+            log_activity($db_connect, $log_actie, $log_details);
+            
             header("Location: " . $return_url);
             exit;
         } else {

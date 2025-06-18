@@ -1,6 +1,7 @@
 <?php
-// We hebben de config nodig voor de databaseverbinding en sessie
+// We hebben de config en de log-functie nodig
 require_once 'config.php';
+require_once 'functions.php';
 
 $error_message = '';
 
@@ -25,18 +26,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
+            
             // Verifieer het gehashte wachtwoord
             if (password_verify($wachtwoord, $user['Wachtwoord'])) {
                 // Wachtwoord is correct, start de sessie
                 $_SESSION['user_id'] = $user['UserID'];
                 $_SESSION['user_naam'] = $user['VolledigeNaam'];
                 $_SESSION['user_rol'] = $user['Rol'];
+                
+                // --- LOGGING: SUCCESVOLLE LOGIN ---
+                log_activity($db_connect, 'Succesvolle login');
 
                 header("Location: index.php");
                 exit;
             }
         }
+        
+        // --- LOGGING: MISLUKTE LOGIN ---
+        // Als we dit punt bereiken, was de loginpoging onsuccesvol.
         $error_message = 'De combinatie van gebruikersnaam en wachtwoord is onjuist.';
+        log_activity($db_connect, 'Mislukte inlogpoging', "Ingevoerde gebruikersnaam: " . $gebruikersnaam);
     }
 }
 ?>
@@ -75,10 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 2rem;
             color: var(--primary-color);
         }
-        .login-header .fa-anchor {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
+        .login-header .sidebar-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
         }
         .login-header h1 {
             font-size: 2rem;
@@ -98,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="login-container">
         <div class="login-header">
-            <i class="fa-solid fa-anchor"></i>
+            <img src="logo.svg" alt="SkibsLog Logo" class="sidebar-logo">
             <h1>SkibsLog</h1>
         </div>
 

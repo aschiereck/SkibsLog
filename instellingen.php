@@ -19,7 +19,7 @@ $result_gebruikers = $db_connect->query("SELECT UserID, Gebruikersnaam, Volledig
         <h2><?php echo htmlspecialchars($pageTitle); ?></h2>
     </div>
 
-    <div class="report-table-card">
+    <div class="report-table-card" style="margin-bottom: 2rem;">
         <h3><i class="fa-solid fa-users-cog"></i> Gebruikersbeheer</h3>
         <p style="margin-bottom: 1.5rem;">Beheer hier de gebruikers en hun rechten binnen SkibsLog.</p>
         
@@ -56,6 +56,16 @@ $result_gebruikers = $db_connect->query("SELECT UserID, Gebruikersnaam, Volledig
             </table>
         </div>
     </div>
+    
+    <!-- NIEUW BLOK VOOR SYSTEEMLOGS -->
+    <?php if (has_role('superuser')): ?>
+    <div class="report-table-card">
+        <h3><i class="fa-solid fa-clipboard-list"></i> Systeem Logs</h3>
+        <p style="margin-bottom: 1.5rem;">Bekijk de activiteiten die zijn uitgevoerd in het systeem.</p>
+        <a href="activity_log.php" class="action-button-header"><i class="fa-solid fa-history"></i> Bekijk Activiteitenlogboek</a>
+    </div>
+    <?php endif; ?>
+
 </section>
 
 <?php require 'footer.php'; ?>
